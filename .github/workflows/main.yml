@@ -1,0 +1,33 @@
+name: Deploy to Render
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Build Docker image
+      run: |
+        docker build -t risk-scoring-service .
+    
+    - name: Deploy to Render
+      env:
+        RENDER_DEPLOY_KEY: ${{ secrets.RENDER_DEPLOY_KEY }}
+        RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+      run: |
+        curl -X POST https://api.render.com/deploy/$RENDER_SERVICE_ID \
+          -H "Authorization: Bearer $RENDER_DEPLOY_KEY"
+    
+    - name: Run tests
+      run: |
+        python -m pytest tests/ --cov=src
+    
+    - name: Upload coverage
+      uses: codecov/codecov-action@v3
