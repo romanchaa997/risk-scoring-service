@@ -1,0 +1,54 @@
+{
+  "name": "Risk Scoring Service - Python 3.11+ FastAPI",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/git:"latest": {}
+  },
+  "containerEnv": {
+    "PYTHONUNBUFFERED": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PIP_NO_CACHE_DIR": "1"
+  },
+  "postCreateCommand": "pip install --upgrade pip && pip install -r requirements.txt && pip install pytest pytest-cov black flake8 mypy",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.debugpy",
+        "charliermarsh.ruff",
+        "GitHub.copilot",
+        "Docker",
+        "ms-vscode.makefile-tools"
+      ],
+      "settings": {
+        "python.linting.enabled": true,
+        "python.linting.ruffEnabled": true,
+        "python.formatting.provider": "black",
+        "[python]": {
+          "editor.formatOnSave": true,
+          "editor.defaultFormatter": "ms-python.python"
+        },
+        "python.analysis.typeCheckingMode": "basic"
+      }
+    }
+  },
+  "mounts": [],
+  "remoteUser": "vscode",
+  "forwardPorts": [8000, 5432, 6379, 6333],
+  "portsAttributes": {
+    "8000": {
+      "label": "FastAPI App",
+      "onAutoForward": "notify"
+    },
+    "5432": {
+      "label": "PostgreSQL",
+      "onAutoForward": "silent"
+    },
+    "6333": {
+      "label": "Qdrant Vector DB",
+      "onAutoForward": "silent"
+    }
+  }
+}
